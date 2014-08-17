@@ -90,6 +90,19 @@ namespace resplunk
 		{
 			using type = typename tuple_template_forward<impl::tuple_prune, typename tuple_type_cat<std::tuple<std::tuple<>>, Tuple>::type>::type::type;
 		};
+
+		template<template<typename...> typename Check, typename... Tuple>
+		struct multi_assert;
+		template<template<typename...> typename Check, typename First, typename... Rest>
+		struct multi_assert<Check, First, Rest...> final
+		{
+			static constexpr bool value = (tuple_template_forward<Check, First>::type::value && multi_assert<Check, Rest...>::value);
+		};
+		template<template<typename...> typename Check>
+		struct multi_assert<Check> final
+		: std::true_type
+		{
+		};
 	}
 }
 
