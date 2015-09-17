@@ -1,14 +1,14 @@
-#ifndef resplunk_util_Tuples_HeaderPlusPlus
-#define resplunk_util_Tuples_HeaderPlusPlus
+#ifndef LB_tuples_tuples_HeaderPlusPlus
+#define LB_tuples_tuples_HeaderPlusPlus
 
 #include <cstdint>
 #include <tuple>
 #include <functional>
 #include <type_traits>
 
-namespace resplunk
+namespace LB
 {
-	namespace util
+	namespace tuples
 	{
 		namespace tuple_unpack
 		{
@@ -37,7 +37,7 @@ namespace resplunk
 		};
 
 		template<typename... Tuples>
-		struct tuple_type_cat
+		struct tuple_type_cat final
 		{
 			using type = typename std::function<decltype(std::tuple_cat<Tuples...>)>::result_type;
 		};
