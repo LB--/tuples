@@ -73,7 +73,7 @@ namespace LB
 			{
 				using type = typename std::conditional
 				<
-					util::tuple_contains<Current, First>::value,
+					tuples::tuple_contains<Current, First>::value,
 					tuple_prune<Current, Rest...>,
 					tuple_prune<typename tuple_type_cat<Current, std::tuple<First>>::type, Rest...>
 				>::type::type;
