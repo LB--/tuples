@@ -10,6 +10,16 @@ namespace LB
 {
 	namespace tuples
 	{
+		template<typename... Types>
+		struct tuple final
+		{
+			template<typename... Args>
+			struct concat final
+			{
+				using type = tuple<Types..., Args...>;
+			};
+		};
+
 		namespace tuple_unpack
 		{
 			template<std::uintmax_t...>
@@ -31,15 +41,29 @@ namespace LB
 		template<template<typename...> typename To, typename Tuple>
 		struct tuple_template_forward;
 		template<template<typename...> typename To, typename... Args>
+		struct tuple_template_forward<To, tuple<Args...>> final
+		{
+			using type = To<Args...>;
+		};
+		template<template<typename...> typename To, typename... Args>
 		struct tuple_template_forward<To, std::tuple<Args...>> final
 		{
 			using type = To<Args...>;
 		};
 
 		template<typename... Tuples>
-		struct tuple_type_cat final
+		struct tuple_type_cat;
+		template<typename First, typename... Rest>
+		struct tuple_type_cat<First, Rest...> final
 		{
-			using type = typename std::function<decltype(std::tuple_cat<Tuples...>)>::result_type;
+			template<typename... Args>
+			using concat = typename First::template concat<Args...>::type;
+			using type = typename tuple_template_forward<concat, typename tuple_type_cat<Rest...>::type>::type;
+		};
+		template<>
+		struct tuple_type_cat<> final
+		{
+			using type = tuple<>;
 		};
 
 		namespace impl
@@ -61,7 +85,7 @@ namespace LB
 		template<typename Tuple, typename Type>
 		struct tuple_contains final
 		{
-			static constexpr bool value = tuple_template_forward<impl::tuple_contains, typename tuple_type_cat<std::tuple<Type>, Tuple>::type>::type::value;
+			static constexpr bool value = tuple_template_forward<impl::tuple_contains, typename tuple_type_cat<tuple<Type>, Tuple>::type>::type::value;
 		};
 
 		namespace impl
@@ -75,7 +99,7 @@ namespace LB
 				<
 					tuples::tuple_contains<Current, First>::value,
 					tuple_prune<Current, Rest...>,
-					tuple_prune<typename tuple_type_cat<Current, std::tuple<First>>::type, Rest...>
+					tuple_prune<typename tuple_type_cat<Current, tuple<First>>::type, Rest...>
 				>::type::type;
 			};
 			template<typename Current>
@@ -88,7 +112,7 @@ namespace LB
 		template<typename Tuple>
 		struct tuple_prune final
 		{
-			using type = typename tuple_template_forward<impl::tuple_prune, typename tuple_type_cat<std::tuple<std::tuple<>>, Tuple>::type>::type::type;
+			using type = typename tuple_template_forward<impl::tuple_prune, typename tuple_type_cat<tuple<tuple<>>, Tuple>::type>::type::type;
 		};
 
 		template<template<typename...> typename Check, typename... Tuple>
