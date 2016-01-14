@@ -1,8 +1,48 @@
-#cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.4)
 
-project(tuples)
+project(LB::tuples
+	VERSION 0.0.0
+	LANGUAGES CXX
+)
 
-ADD_BII_TARGETS()
+add_library(tuples INTERFACE)
+#set_property(TARGET LB::tuples PROPERTY CXX_STANDARD 17)
+target_compile_options(tuples
+	INTERFACE
+		"-std=c++1z"
+)
+target_include_directories(tuples
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+		$<INSTALL_INTERFACE:include>
+)
 
-#set_property(TARGET ${BII_BLOCK_TARGET} PROPERTY CXX_STANDARD 17)
-target_compile_options(${BII_BLOCK_TARGET} INTERFACE "-std=c++1z")
+install(
+	TARGETS
+		tuples
+	EXPORT tuples
+)
+install(
+	EXPORT tuples
+	DESTINATION cmake
+	NAMESPACE LB::
+)
+install(
+	FILES
+		"tuples.hpp"
+	DESTINATION include/LB/tuples
+)
+
+enable_testing()
+
+add_executable(test-basic
+	"test/basic.cpp"
+)
+target_link_libraries(test-basic
+	PUBLIC
+		tuples
+)
+add_test(
+	NAME basic
+	COMMAND test-basic
+)

@@ -1,4 +1,4 @@
-tuples [![biicode](https://webapi.biicode.com/v1/badges/LB/LB/tuples/master)](https://www.biicode.com/LB/tuples) [![travis](https://travis-ci.org/LB--/tuples.svg?branch=tuples)](https://travis-ci.org/LB--/tuples)
+tuples [![travis](https://travis-ci.org/LB--/tuples.svg?branch=tuples)](https://travis-ci.org/LB--/tuples)
 ======
 
 Tuples are useful for acting as arrays of types in template metaprogramming, often called type vectors. This library has boilerplate code for dealing with tuples at compile-time and also some utility functions.
