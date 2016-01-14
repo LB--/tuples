@@ -6,7 +6,7 @@ project(LB::tuples
 )
 
 add_library(tuples INTERFACE)
-#set_property(TARGET LB::tuples PROPERTY CXX_STANDARD 17)
+#set_property(TARGET tuples PROPERTY CXX_STANDARD 17)
 target_compile_options(tuples
 	INTERFACE
 		"-std=c++1z"
@@ -24,7 +24,7 @@ install(
 )
 install(
 	EXPORT tuples
-	DESTINATION cmake
+	DESTINATION cmake/LB/tuples
 	NAMESPACE LB::
 )
 install(
