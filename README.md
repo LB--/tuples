@@ -27,14 +27,14 @@ Takes the types stored in an `LB::tuples::tuple` or a `std::tuple` and uses them
 For example, you could use it to convert between `LB::tuples::tuple` and `std::tuple`:
 ```cpp
 //convert LB::tuples::tuple to std::tuple
-using t1 = tuples::tuple<int, int, float>;
-using t2 = tuples::tuple_template_forward<std::tuple, t1>::type;
+using t1 = LB::tuples::tuple<int, int, float>;
+using t2 = LB::tuples::tuple_template_forward<std::tuple, t1>::type;
 static_assert(std::is_same<t2, std::tuple<int, int, float>>::value, "t1 != t2");
 
 //convert std::tuple to LB::tuples::tuple
 using t3 = std::tuple<float, int, double>;
-using t4 = tuples::tuple_template_forward<tuples::tuple, t3>::type;
-static_assert(std::is_same<t4, tuples::tuple<float, int, double>>::value, "t3 != t4");
+using t4 = LB::tuples::tuple_template_forward<tuples::tuple, t3>::type;
+static_assert(std::is_same<t4, LB::tuples::tuple<float, int, double>>::value, "t3 != t4");
 ```
 
 #### `tuple_type_cat`
