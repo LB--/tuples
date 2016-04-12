@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.4)
 
 project(LB/tuples
-	VERSION 0.0.0
+	VERSION 1.0.0
 	LANGUAGES CXX
 )
-set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/${PROJECT_VERSION})
+set(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/${PROJECT_VERSION}")
 
 add_library(tuples INTERFACE)
 #set_property(TARGET tuples PROPERTY CXX_STANDARD 17)
@@ -34,16 +34,8 @@ install(
 	DESTINATION include/${PROJECT_NAME}
 )
 
-enable_testing()
-
-add_executable(test-basic
-	"test/basic.cpp"
-)
-target_link_libraries(test-basic
-	PUBLIC
-		tuples
-)
-add_test(
-	NAME basic
-	COMMAND test-basic
-)
+option(BUILD_TESTS "Whether to build the tests" ON)
+if(BUILD_TESTS)
+	enable_testing()
+	add_subdirectory(test)
+endif()

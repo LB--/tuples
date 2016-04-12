@@ -72,4 +72,14 @@ static_assert(std::is_same<pruned_t, LB::tuples::tuple<void, int, short>>::value
 ```
 
 #### `multi_assert`
-TODO
+Given a template that takes zero or more template arguments and yields a `value` member, takes all the given tuples and forwards their contents to the given template individually. The resulting `value` is all the intermediate `value`s combined with `&&`. In other words, asserts that multiple tuples satisfy a requirement.
+
+Example:
+```cpp
+using t1 = LB::tuples::tuple<int, int>;
+using t2 = LB::tuples::tuple<float, float>;
+using t3 = LB::tuples::tuple<int, float>;
+
+static_assert(LB::tuples::multi_assert<std::is_same, t1, t2>::value, "t1 or t2 isn't homogeneous");
+static_assert(!LB::tuples::multi_assert<std::is_same, t1, t2, t3>::value, "t1, t2 and t3 are homogeneous");
+```

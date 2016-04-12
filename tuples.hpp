@@ -2,8 +2,8 @@
 #define LB_tuples_tuples_HeaderPlusPlus
 
 #include <cstdint>
-#include <tuple>
 #include <functional>
+#include <tuple>
 #include <type_traits>
 
 namespace LB
