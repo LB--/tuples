@@ -5,6 +5,7 @@
 #include <functional>
 #include <tuple>
 #include <type_traits>
+#include <utility>
 
 namespace LB
 {
@@ -20,24 +21,6 @@ namespace LB
 			};
 		};
 
-		namespace tuple_unpack
-		{
-			template<std::uintmax_t...>
-			struct seq final
-			{
-			};
-			template<std::uintmax_t N, std::uintmax_t... S>
-			struct gens final
-			: gens<N-1, N-1, S...>
-			{
-			};
-			template<std::uintmax_t... S>
-			struct gens<0, S...> final
-			{
-				using type = seq<S...>;
-			};
-		};
-
 		template<template<typename...> typename To, typename Tuple>
 		struct tuple_template_forward;
 		template<template<typename...> typename To, typename... Args>
@@ -50,6 +33,27 @@ namespace LB
 		{
 			using type = To<Args...>;
 		};
+
+		namespace impl
+		{
+			template<typename F, typename Tuple, std::size_t... I>
+			constexpr decltype(auto) tuple_forward(F &&f, Tuple &&t, std::index_sequence<I...>)
+			{
+				return f(std::get<I>(std::forward<Tuple>(t))...); //not as robust as std::invoke
+			}
+		}
+
+		//substitute for std::apply
+		template<typename F, typename Tuple>
+		constexpr decltype(auto) tuple_forward(F &&f, Tuple &&t)
+		{
+			return impl::tuple_forward
+			(
+				std::forward<F>(f),
+				std::forward<Tuple>(t),
+				std::make_integer_sequence<std::size_t, std::tuple_size<std::decay_t<Tuple>>{}>{}
+			);
+		}
 
 		template<typename... Tuples>
 		struct tuple_type_cat;

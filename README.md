@@ -18,9 +18,6 @@ Finally, link to the `LB::tuples` imported target with `target_link_libraries()`
 Instead of using `std::tuple`, you should use `LB::tuples::tuple` because it does not try to hold data.
 `std::tuple` was used originally until it was found that there are issues with using `void` and abstract classes.
 
-#### `tuple_unpack`
-TODO
-
 #### `tuple_template_forward`
 Takes the types stored in an `LB::tuples::tuple` or a `std::tuple` and uses them as template parameters to the given template.
 
@@ -35,6 +32,22 @@ static_assert(std::is_same<t2, std::tuple<int, int, float>>::value, "t1 != t2");
 using t3 = std::tuple<float, int, double>;
 using t4 = LB::tuples::tuple_template_forward<tuples::tuple, t3>::type;
 static_assert(std::is_same<t4, LB::tuples::tuple<float, int, double>>::value, "t3 != t4");
+```
+
+#### `tuple_forward`
+Takes the values in a `std::tuple` and calls a function with them. See [`std::apply`](http://en.cppreference.com/w/cpp/utility/apply) - `tuple_forward` is an implementation for cases when `std::apply` is not available. If you have access to `std::apply` and/or `std::invoke`, please use them instead as they are more robust.
+
+Example:
+```cpp
+static constexpr bool are_equal(int x, int y)
+{
+	return x == y;
+}
+
+static constexpr auto t1 = std::make_tuple(1, 1);
+static constexpr auto t2 = std::make_tuple(1, 2);
+static_assert(LB::tuples::tuple_forward(are_equal, t1), "t1 doesn't contain the same value twice");
+static_assert(!LB::tuples::tuple_forward(are_equal, t2), "t2 contains the same value twice");
 ```
 
 #### `tuple_type_cat`
