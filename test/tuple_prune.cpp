@@ -7,6 +7,6 @@ int main() noexcept
 	static_assert(std::is_same
 	<
 		tuple<void, int, short>,
-		typename tuple_prune<tuple<void, void, int, void, int, short, void, short, int, short>
-	>::type>::value, "tuple_prune is broken");
+		tuple_prune_t<tuple<void, void, int, void, int, short, void, short, int, short>>
+	>{}, "tuple_prune is broken");
 }

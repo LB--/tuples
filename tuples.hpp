@@ -19,6 +19,8 @@ namespace LB
 			{
 				using type = tuple<Types..., Args...>;
 			};
+			template<typename... Args>
+			using concat_t = typename concat<Args...>::type;
 		};
 
 		template<template<typename...> typename To, typename Tuple>
@@ -33,6 +35,8 @@ namespace LB
 		{
 			using type = To<Args...>;
 		};
+		template<template<typename...> typename To, typename Tuple>
+		using tuple_template_forward_t = typename tuple_template_forward<To, Tuple>::type;
 
 		namespace impl
 		{
@@ -51,7 +55,7 @@ namespace LB
 			(
 				std::forward<F>(f),
 				std::forward<Tuple>(t),
-				std::make_integer_sequence<std::size_t, std::tuple_size<std::decay_t<Tuple>>{}>{}
+				std::make_index_sequence<std::tuple_size<std::decay_t<Tuple>>{}>{}
 			);
 		}
 
@@ -61,14 +65,16 @@ namespace LB
 		struct tuple_type_cat<First, Rest...> final
 		{
 			template<typename... Args>
-			using concat = typename First::template concat<Args...>::type;
-			using type = typename tuple_template_forward<concat, typename tuple_type_cat<Rest...>::type>::type;
+			using concat = typename First::template concat_t<Args...>;
+			using type = tuple_template_forward_t<concat, typename tuple_type_cat<Rest...>::type>;
 		};
 		template<>
 		struct tuple_type_cat<> final
 		{
 			using type = tuple<>;
 		};
+		template<typename... Tuples>
+		using tuple_type_cat_t = typename tuple_type_cat<Tuples...>::type;
 
 		namespace impl
 		{
@@ -76,8 +82,12 @@ namespace LB
 			struct tuple_contains;
 			template<typename Type, typename First, typename... Rest>
 			struct tuple_contains<Type, First, Rest...> final
+			: std::integral_constant //C++17: use std::bool_constant
+			<
+				bool,
+				std::is_same<Type, First>::value || tuple_contains<Type, Rest...>::value
+			>
 			{
-				static constexpr bool value = (std::is_same<Type, First>::value || tuple_contains<Type, Rest...>::value);
 			};
 			template<typename Type>
 			struct tuple_contains<Type> final
@@ -88,9 +98,19 @@ namespace LB
 
 		template<typename Tuple, typename Type>
 		struct tuple_contains final
+		: std::integral_constant //C++17: use std::bool_constant
+		<
+			bool,
+			tuple_template_forward_t
+			<
+				impl::tuple_contains,
+				tuple_type_cat_t<tuple<Type>, Tuple>
+			>::value
+		>
 		{
-			static constexpr bool value = tuple_template_forward<impl::tuple_contains, typename tuple_type_cat<tuple<Type>, Tuple>::type>::type::value;
 		};
+		template<typename Tuple, typename Type>
+		constexpr bool tuple_contains_v = tuple_contains<Tuple, Type>::value;
 
 		namespace impl
 		{
@@ -99,12 +119,12 @@ namespace LB
 			template<typename Current, typename First, typename... Rest>
 			struct tuple_prune<Current, First, Rest...> final
 			{
-				using type = typename std::conditional
+				using type = typename std::conditional_t
 				<
 					tuples::tuple_contains<Current, First>::value,
 					tuple_prune<Current, Rest...>,
 					tuple_prune<typename tuple_type_cat<Current, tuple<First>>::type, Rest...>
-				>::type::type;
+				>::type;
 			};
 			template<typename Current>
 			struct tuple_prune<Current> final
@@ -116,21 +136,34 @@ namespace LB
 		template<typename Tuple>
 		struct tuple_prune final
 		{
-			using type = typename tuple_template_forward<impl::tuple_prune, typename tuple_type_cat<tuple<tuple<>>, Tuple>::type>::type::type;
+			using type = typename tuple_template_forward_t
+			<
+				impl::tuple_prune,
+				tuple_type_cat_t<tuple<tuple<>>, Tuple>
+			>::type;
 		};
+		template<typename Tuple>
+		using tuple_prune_t = typename tuple_prune<Tuple>::type;
 
 		template<template<typename...> typename Check, typename... Tuple>
 		struct multi_assert;
 		template<template<typename...> typename Check, typename First, typename... Rest>
 		struct multi_assert<Check, First, Rest...> final
+		: std::integral_constant //C++17: use std::bool_constant
+		<
+			bool,
+			tuple_template_forward_t<Check, First>::value &&
+			multi_assert<Check, Rest...>::value
+		>
 		{
-			static constexpr bool value = (tuple_template_forward<Check, First>::type::value && multi_assert<Check, Rest...>::value);
 		};
 		template<template<typename...> typename Check>
 		struct multi_assert<Check> final
 		: std::true_type
 		{
 		};
+		template<template<typename...> typename Check, typename... Tuple>
+		constexpr bool multi_assert_v = multi_assert<Check, Tuple...>::value;
 	}
 }
 

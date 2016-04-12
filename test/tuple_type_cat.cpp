@@ -6,6 +6,6 @@ int main() noexcept
 
 	using t1 = tuple<int>;
 	using t2 = tuple<float>;
-	using t3 = typename tuple_type_cat<t1, t2>::type;
-	static_assert(std::is_same<t3, tuple<int, float>>::value, "t1 + t2 != t3");
+	using t3 = tuple_type_cat_t<t1, t2>;
+	static_assert(std::is_same<t3, tuple<int, float>>{}, "t1 + t2 != t3");
 }

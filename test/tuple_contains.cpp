@@ -6,6 +6,6 @@ int main() noexcept
 
 	using t1 = tuple<int, int>;
 	using t2 = tuple<int, float>;
-	static_assert(!tuple_contains<t1, float>::value, "t1 contains float");
-	static_assert(tuple_contains<t2, float>::value, "t2 doesn't contain float");
+	static_assert(!tuple_contains<t1, float>{}, "t1 contains float");
+	static_assert(tuple_contains_v<t2, float>, "t2 doesn't contain float");
 }
