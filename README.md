@@ -8,7 +8,7 @@ Tuples are useful for acting as arrays of types in template metaprogramming, oft
 ## Usage
 ### CMake
 From the `cmake` directory, copy the `FindLB` directory to a place in your `CMAKE_MODULE_PATH`.
-Then, add `find_package(LB/tuples REQUIRED)` to your CMake script.
+Then, add `find_package(LB/tuples 1 EXACT REQUIRED)` to your CMake script.
 You may need to set the CMake variable `LB/tuples_ROOT` if you installed to a nonstandard location.
 Finally, link to the `LB::tuples` imported target with `target_link_libraries()`.
 
