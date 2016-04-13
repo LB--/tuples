@@ -17,6 +17,7 @@ Note that alongside `std::tuple` there is also [`LB::tuples::tuple`](https://git
 `std::tuple` does not support `void` or abstract types, whereas `LB::tuples::tuple` does - the latter should be your default.
 
 #### [`tuple_template_forward`](https://github.com/LB--/tuples/blob/tuples/src/tuple_template_forward.hpp)
+##### `#include <LB/tuples/tuple_template_forward.hpp>`
 Takes the types stored in an `LB::tuples::tuple` or a `std::tuple` and uses them as template parameters to the given template.
 Due to limitations in the C++ language, you cannot forward types to a template that has value template arguments even if they are defaulted - instead, you should create a proxy template in that situation.
 
@@ -34,6 +35,7 @@ static_assert(std::is_same<t4, LB::tuples::tuple<float, int, double>>{}, "t3 != 
 ```
 
 #### [`tuple_forward`](https://github.com/LB--/tuples/blob/tuples/src/tuple_forward.hpp)
+##### `#include <LB/tuples/tuple_forward.hpp>`
 Takes the values in a `std::tuple` and calls a function with them.
 See [`std::apply`](http://en.cppreference.com/w/cpp/utility/apply) - `tuple_forward` is an implementation for cases when `std::apply` is not available.
 If you have access to `std::apply` and/or `std::invoke`, please use them instead as they are more robust.
@@ -49,6 +51,7 @@ static_assert(!LB::tuples::tuple_forward(std::equal_to<int>{}, t2), "t2 contains
 ```
 
 #### [`tuple_type_cat`](https://github.com/LB--/tuples/blob/tuples/src/tuple_type_cat.hpp)
+##### `#include <LB/tuples/tuple_type_cat.hpp>`
 Concatenates the types in zero or more `LB::tuples::tuple`s in left-to-right order.
 `std::tuple` is not supported.
 
@@ -61,6 +64,7 @@ static_assert(std::is_same<t3, LB::tuples::tuple<int, float>>{}, "t1 + t2 != t3"
 ```
 
 #### [`tuple_contains`](https://github.com/LB--/tuples/blob/tuples/src/tuple_contains.hpp)
+##### `#include <LB/tuples/tuple_contains.hpp>`
 Checks if an `LB::tuples::tuple` contains the given type.
 `std::tuple` is not supported.
 
@@ -73,6 +77,7 @@ static_assert(LB::tuples::tuple_contains_v<t2, float>, "t2 doesn't contain float
 ```
 
 #### [`tuple_prune`](https://github.com/LB--/tuples/blob/tuples/src/tuple_prune.hpp)
+##### `#include <LB/tuples/tuple_prune.hpp>`
 Takes an `LB::tuples::tuple` and removes duplicate types without rearranging the order of the types.
 `std::tuple` is not supported.
 
@@ -86,6 +91,7 @@ static_assert(std::is_same<pruned_t, LB::tuples::tuple<void, int, short>>{}, "tu
 ```
 
 #### [`multi_assert`](https://github.com/LB--/tuples/blob/tuples/src/multi_assert.hpp)
+##### `#include <LB/tuples/multi_assert.hpp>`
 Given a template that takes zero or more template arguments and yields a `value` member, takes all the given `LB::tuples::tuple`s and/or `std::tuple`s and forwards their contents to the given template individually.
 The resulting `value` is all the intermediate `value`s combined with `&&`.
 In other words, asserts that multiple tuples satisfy a requirement.
