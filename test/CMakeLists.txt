@@ -7,10 +7,6 @@ macro(simple_test _name)
 		PUBLIC
 			tuples
 	)
-	target_include_directories(test-${_name}
-		PRIVATE
-			${PROJECT_SOURCE_DIR}
-	)
 	add_test(
 		NAME ${_name}
 		COMMAND test-${_name}

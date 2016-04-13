@@ -14,7 +14,7 @@ target_compile_options(tuples
 )
 target_include_directories(tuples
 	INTERFACE
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+		$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
 		$<INSTALL_INTERFACE:include>
 )
 
@@ -30,7 +30,13 @@ install(
 )
 install(
 	FILES
-		"tuples.hpp"
+		"src/tuple.hpp"
+		"src/tuple_template_forward.hpp"
+		"src/tuple_forward.hpp"
+		"src/tuple_type_cat.hpp"
+		"src/tuple_contains.hpp"
+		"src/tuple_prune.hpp"
+		"src/multi_assert.hpp"
 	DESTINATION include/${PROJECT_NAME}
 )
 
