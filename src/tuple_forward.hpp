@@ -30,7 +30,7 @@ namespace LB
 			(
 				std::forward<F>(f),
 				std::forward<Tuple>(t),
-				std::make_index_sequence<std::tuple_size<std::decay_t<Tuple>>{}>{}
+				std::make_index_sequence<std::tuple_size<std::decay_t<Tuple>>::value>{}
 			);
 		}
 	}
